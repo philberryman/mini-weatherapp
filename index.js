@@ -16,7 +16,6 @@ const getLocation = (lat, long) => {
                 return response.json();
             })
             .then(function (body) {
-            //    getWeather(body.results[5]);
                 getWeather(body.address.city);
             })
         }
