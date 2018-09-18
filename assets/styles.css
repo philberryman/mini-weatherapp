@@ -106,7 +106,7 @@
 .thumb.active,
 .thumb:hover,
 .thumb:focus {
-  outline: 1px solid white;
+  outline: 3px solid white;
 }
 
 .thumb {

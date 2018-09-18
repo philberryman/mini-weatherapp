@@ -12,8 +12,10 @@ const getWeather = (location) => {
                 return response.json();
             })
             .then(function (body) {
+                console.log(body);
                 const weather = body.weather[0].description;
                 getPicture(location + ' weather ' + weather);
+                weatherDisplay(weather, location);
             })
         }
 
@@ -28,6 +30,7 @@ const getPicture = (weather) => {
             })
             .then(function (body) {
                 photos = body.results;
+                console.log(photos);
                 createThumbs();
             })
         }
@@ -52,7 +55,9 @@ const eventListen = () => {
     content.addEventListener('click', event => {
     if(event.target.matches('.thumb')){
         const result = photos.find( photo => photo.id === event.target.id );
-        changePhoto(result.urls.small);
+        changePhoto(result.urls.regular);
+        changeCredits(result);
+        
     }
     });
 }
@@ -75,6 +80,27 @@ const changePhoto = (url) =>  {
     const childNode = document.createElement("img");
     childNode.src = url;
     parentNode.appendChild(childNode);
+
+}
+
+const changeCredits = (photo) => {
+    const creditUserNode = document.querySelector('#credit-user');
+    const creditUserProfile = document.querySelector('#credit-platform')
+    creditUserNode.textContent = "";
+    creditUserNode.href = "";
+    creditUserProfile.href = "";
+    creditUserNode.textContent = photo.user.name;
+    creditUserNode.href = photo.user.portfolio_url;
+    creditUserProfile.href = photo.user.links.html;
+
+}
+
+const weatherDisplay = (weather, location) => {
+    const parentNode = document.querySelector("header");
+    const childNode = document.createElement("p");
+    childNode.textContent = "The current weather in " + location + ": " + weather;
+    parentNode.appendChild(childNode);
+    
 }
 
 
