@@ -2,11 +2,29 @@ let photos = [];
 
 const weatherAPI = '777c23f5bbd5f5d4147b6bc37ff8db50';
 const unSplashAPI = "d7ab4c73aab34ac3669753c9065df8434e7cf8bdf9cdaf9022eba3aae46d4a07";
+const locationIQKey = "0678f909bb29c0";
+
+// https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=AIzaSyCG_D0wN8y6YHnzRySh-p7Zsz5NoFJa8LU
+// https://eu1.locationiq.com/v1/reverse.php?key=locationIQKey&lat=${lat}&lon=${long}&format=json
+
+
+const getLocation = (lat, long) => {
+    console.log(location);
+    let url = `https://eu1.locationiq.com/v1/reverse.php?key=${locationIQKey}&lat=${lat}&lon=${long}&format=json`;
+        fetch(url)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (body) {
+            //    getWeather(body.results[5]);
+                getWeather(body.address.city);
+            })
+        }
 
 
 // location goes into this function and weather comes out (and is sent to getPicture function)
 const getWeather = (location) => {
-    var url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${weatherAPI}`;
+    let url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${weatherAPI}`;
         fetch(url)
             .then(function (response) {
                 return response.json();
@@ -23,7 +41,7 @@ const getWeather = (location) => {
 // weather (from getWeather) is sent to Unsplash api. Unsplash return pictures related to the weather. These are stored in photos (a global array)
 const getPicture = (weather) => {
 
-    var url = `https://api.unsplash.com/search/photos?page=1&query=${weather}&client_id=${unSplashAPI}`;
+    let url = `https://api.unsplash.com/search/photos?page=1&query=${weather}&client_id=${unSplashAPI}`;
         fetch(url)
             .then(function (response) {
                 return response.json();
@@ -57,7 +75,10 @@ const eventListen = () => {
         const result = photos.find( photo => photo.id === event.target.id );
         changePhoto(result.urls.regular);
         changeCredits(result);
-        
+        console.log(event.target.classList);
+        const allThumbs = document.querySelectorAll('.thumb');
+        allThumbs.forEach(item => item.className = "thumb");
+        event.target.classList.toggle('active');   
     }
     });
 }
@@ -104,9 +125,20 @@ const weatherDisplay = (weather, location) => {
 }
 
 
+let longLat = [];
+
+const currentPosition = navigator.geolocation.getCurrentPosition(function(position) {
+    getLocation(position.coords.latitude, position.coords.longitude);
+  });
+
+
 
 
 submitListen();
 eventListen();
+
+
+
+
 
 
